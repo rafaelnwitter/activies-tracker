@@ -1,0 +1,30 @@
+version: '2.2'
+
+services:
+    activies-app:
+        build: .
+        container_name: activies-app
+        entrypoint: ./.docker/entrypoint.sh
+        ports: 
+            - 3000:3000
+        volumes: 
+            - .:/home/node/react-project/tracker-backend
+
+    db:
+        image: mysql:8.0.25
+        container_name: activies-app-db
+        restart: always
+        tty: true
+        ports: 
+            - "3306:3306"
+        volumes: 
+            - activies-app-dbdata:/var/lib/mysql
+        environment: 
+            - MYSQL_DATABASE=activies-app
+            - MYSQL_ROOT_PASSWORD=root
+            
+        command: --default-authentication-plugin=caching_sha2_password
+
+volumes: 
+    activies-app-dbdata:
+        external: true
