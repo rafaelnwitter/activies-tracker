@@ -22,8 +22,13 @@ services:
         environment: 
             - MYSQL_DATABASE=activies-app
             - MYSQL_ROOT_PASSWORD=root
-            
         command: --default-authentication-plugin=caching_sha2_password
+
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 8888:8080 
 
 volumes: 
     activies-app-dbdata:
