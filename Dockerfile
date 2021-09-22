@@ -2,10 +2,10 @@ FROM node:10.19.0-alpine
 
 RUN apk add --no-cache bash
 
-RUN npm config set cache /home/node/react-project/tracker-backend/.npm-cache --global
+RUN npm config set cache /home/node/activies-tracker/.npm-cache --global
 
 RUN npm i -g @nestjs/cli@7.6.0
 
 USER node
 
-WORKDIR /home/node/react-project/tracker-backend
+WORKDIR /home/node/activies-tracker

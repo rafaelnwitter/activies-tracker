@@ -8,8 +8,7 @@ services:
         ports: 
             - 3000:3000
         volumes: 
-            - .:/home/node/react-project/tracker-backend
-
+            - .:/home/node/activies-tracker
     db:
         image: mysql:8.0.25
         container_name: activies-app-db

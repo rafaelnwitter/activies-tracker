@@ -1,5 +1,5 @@
 #!/bin/bash
 
-cd /home/node/react-project/tracker-backend
+cd /home/node/activies-tracker
 npm install
 npm run start:dev
