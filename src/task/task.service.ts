@@ -67,7 +67,8 @@ export class TaskService {
       return await this.TaskRepo.update(id, updateTaskRequest);
   }
 
-  remove(id: number) {
-    return this.TaskRepo.delete(id);
+  public async remove(id: number) {
+    // fetch and check if the task exist
+    if (await this.findOne(id)) return this.TaskRepo.delete(id);
   }
 }
