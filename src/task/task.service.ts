@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateTaskDto } from './dto/create-task.dto';
+import { TaskDTO } from './dto/task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
-import { Task } from './entities/task.entity';
+import { Task, TaskStatus, TaskType } from './entities/task.entity';
 
 @Injectable()
 export class TaskService {
@@ -11,20 +12,59 @@ export class TaskService {
     @InjectRepository(Task)
     private TaskRepo: Repository<Task>,
   ) {}
-  create(createTaskDto: CreateTaskDto) {
-    return this.TaskRepo.save(createTaskDto);
+
+  public async create(createTaskRequest: CreateTaskDto) {
+    const task: Task = new Task();
+    task.title = createTaskRequest.title;
+    task.description = createTaskRequest.description;
+    if (createTaskRequest.type == 0) {
+      task.type = TaskType.Development;
+    } else {
+      task.type = TaskType.Support;
+    }
+    task.status = TaskStatus.Created;
+
+    await this.TaskRepo.save(task);
+
+    const taskDTO: TaskDTO = this.entityToDTO(task);
+
+    return taskDTO;
   }
 
-  findAll() {
-    return this.TaskRepo.find();
+  private entityToDTO(task: Task): TaskDTO {
+    const taskDTO: TaskDTO = new TaskDTO();
+    taskDTO.id = task.id;
+    taskDTO.title = task.title;
+    taskDTO.description = task.description;
+    taskDTO.type = task.type;
+    taskDTO.status = task.status;
+
+    return taskDTO;
   }
 
-  findOne(id: number) {
-    return this.TaskRepo.findOneOrFail(id);
+  public async findAll() {
+    const tasks: Task[] = await this.TaskRepo.find();
+    const tasksDTO: TaskDTO[] = tasks.map((x) => this.entityToDTO(x));
+
+    return tasksDTO;
   }
 
-  update(id: number, updateTaskDto: UpdateTaskDto) {
-    return this.TaskRepo.update(id, updateTaskDto);
+  public async findOne(id: number) {
+    const task: Task = await this.TaskRepo.findOne(id);
+
+    if (!task)
+      throw new NotFoundException(`Task with the id ${id} was not found`);
+
+    const taskDTO: TaskDTO = this.entityToDTO(task);
+
+    return taskDTO;
+  }
+
+  public async update(id: number, updateTaskRequest: UpdateTaskDto) {
+    // fetch and check if the task exist
+    if (await this.findOne(id))
+      // update the properties on the task
+      return await this.TaskRepo.update(id, updateTaskRequest);
   }
 
   remove(id: number) {

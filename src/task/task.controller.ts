@@ -6,37 +6,51 @@ import {
   Patch,
   Param,
   Delete,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 
-@Controller('task')
+@Controller('tasks')
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
   @Post()
-  create(@Body() createTaskDto: CreateTaskDto) {
-    return this.taskService.create(createTaskDto);
+  public async create(@Body() createTaskDto: CreateTaskDto) {
+    const resp = await this.taskService.create(createTaskDto);
+
+    return resp;
   }
 
   @Get()
-  findAll() {
-    return this.taskService.findAll();
+  public async findAll() {
+    const resp = await this.taskService.findAll();
+
+    return resp;
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.taskService.findOne(+id);
+  public async findOne(@Param('id') id: string) {
+    const resp = await this.taskService.findOne(+id);
+
+    return resp;
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
-    return this.taskService.update(+id, updateTaskDto);
+  public async update(
+    @Param('id') id: string,
+    @Body() updateTaskDto: UpdateTaskDto,
+  ) {
+    const resp = await this.taskService.update(+id, updateTaskDto);
+
+    return resp;
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.taskService.remove(+id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  public async remove(@Param('id') id: string) {
+    await this.taskService.remove(+id);
   }
 }
