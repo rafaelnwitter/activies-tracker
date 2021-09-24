@@ -28,7 +28,7 @@ export class Task {
   @Column({ nullable: true, length: 1024 })
   description: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, default: TaskType.Development })
   type: TaskType;
 
   @Column({ nullable: false, default: TaskStatus.Created })
