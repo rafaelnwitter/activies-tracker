@@ -1,3 +1,6 @@
 # activies-tracker
 
-## Entities are created in src/entity
+## Every module has a MVC 
+
+
+### To run the background use docker-compose up --build
